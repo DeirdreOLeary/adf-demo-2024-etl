@@ -1,0 +1,14 @@
+{
+	"name": "ls_sqldb_demo_dw_2024",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"server": "sql-demo-2024.database.windows.net",
+			"database": "sqldb-demo-dw-2024",
+			"encrypt": "mandatory",
+			"trustServerCertificate": false,
+			"authenticationType": "SystemAssignedManagedIdentity"
+		}
+	}
+}
