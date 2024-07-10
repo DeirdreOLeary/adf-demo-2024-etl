@@ -1,6 +1,5 @@
 {
 	"name": "ls_stackoverflow2013",
-	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"annotations": [],
 		"type": "SqlServer",
@@ -11,11 +10,19 @@
 			"trustServerCertificate": true,
 			"authenticationType": "SQL",
 			"userName": "adf-etl-demo-2024",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIzMTU0YTNjZC1hYjBmLTQ4MGItYTdlOS04NDMyY2E2NDRmYzgiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "ls_kv_demo_adf_2024",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adf-etl-demo-2024-password"
+			}
 		},
 		"connectVia": {
 			"referenceName": "shir-demo",
 			"type": "IntegrationRuntimeReference"
 		}
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/linkedservices"
 }
