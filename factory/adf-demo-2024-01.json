@@ -1,0 +1,9 @@
+{
+	"name": "adf-demo-2024-01",
+	"location": "northeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "***REMOVED***",
+		"tenantId": "***REMOVED***"
+	}
+}
