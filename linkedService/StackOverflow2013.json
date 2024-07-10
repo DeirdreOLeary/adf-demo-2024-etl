@@ -1,0 +1,21 @@
+{
+	"name": "StackOverflow2013",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "DESKTOP-FAHJ1AD",
+			"database": "StackOverflow2013",
+			"encrypt": "mandatory",
+			"trustServerCertificate": true,
+			"authenticationType": "SQL",
+			"userName": "adf-etl-demo-2024",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJhNzcxNjM1YS05ZDAwLTQ0ZjgtYTYxZC0zZDQ3YzBlYzExMTgiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "shir-demo",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
