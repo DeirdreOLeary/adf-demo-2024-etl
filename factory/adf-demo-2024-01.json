@@ -1,0 +1,9 @@
+{
+	"name": "adf-demo-2024-01",
+	"location": "northeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "56a3d705-a226-4122-b23e-b4545e32c673",
+		"tenantId": "03480755-aba6-4c96-a369-01ab3d749979"
+	}
+}
