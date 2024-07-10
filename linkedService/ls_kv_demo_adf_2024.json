@@ -1,0 +1,10 @@
+{
+	"name": "ls_kv_demo_adf_2024",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://kv-demo-adf-2024.vault.azure.net/"
+		}
+	}
+}
