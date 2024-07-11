@@ -5,7 +5,14 @@
 			{
 				"name": "Extract Badges",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Truncate staging tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -105,7 +112,14 @@
 			{
 				"name": "Extract PostTypes",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Truncate staging tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -180,7 +194,14 @@
 			{
 				"name": "Extract Users",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Truncate staging tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -263,6 +284,26 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "Truncate staging tables",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[stg].[ADF_Truncate_Staging_Tables]"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_sqldb_demo_dw_2024",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
 		"annotations": []
