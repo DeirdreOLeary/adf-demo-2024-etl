@@ -1,0 +1,26 @@
+{
+	"name": "ds_stackoverflow2013_PostTypes",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_stackoverflow2013",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Type",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "PostTypes"
+		}
+	}
+}
