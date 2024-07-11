@@ -152,90 +152,6 @@
 						]
 					},
 					{
-						"name": "Extract PostTypes",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Truncate staging tables",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "SqlServerSource",
-								"queryTimeout": "02:00:00",
-								"isolationLevel": "ReadCommitted",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false
-							},
-							"enableStaging": false,
-							"parallelCopies": 1,
-							"dataIntegrationUnits": 4,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "Id",
-											"type": "Int32",
-											"physicalType": "int"
-										},
-										"sink": {
-											"name": "Key",
-											"type": "Int32",
-											"physicalType": "int"
-										}
-									},
-									{
-										"source": {
-											"name": "Type",
-											"type": "String",
-											"physicalType": "nvarchar"
-										},
-										"sink": {
-											"name": "Type",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "ds_stackoverflow2013_PostTypes",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ds_sqldb_demo_dw_2024_Source_PostTypes",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
 						"name": "Extract Users",
 						"type": "Copy",
 						"dependsOn": [
@@ -350,6 +266,75 @@
 							"referenceName": "ls_sqldb_demo_dw_2024",
 							"type": "LinkedServiceReference"
 						}
+					},
+					{
+						"name": "Transform User data",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Extract Badges",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Extract Users",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[stg].[ADF_Transform_dimUser]"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sqldb_demo_dw_2024",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Load dimUser",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Transform User data",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[stg].[ADF_Load_dimUser]",
+							"storedProcedureParameters": {
+								"ETLTimestamp": {
+									"value": {
+										"value": "@utcnow()",
+										"type": "Expression"
+									},
+									"type": "DateTime"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sqldb_demo_dw_2024",
+							"type": "LinkedServiceReference"
+						}
 					}
 				],
 				"policy": {
@@ -360,10 +345,312 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_stackoverflow2013_Badges')]",
 				"[concat(variables('factoryId'), '/datasets/ds_sqldb_demo_dw_2024_Source_Badges')]",
-				"[concat(variables('factoryId'), '/datasets/ds_stackoverflow2013_PostTypes')]",
-				"[concat(variables('factoryId'), '/datasets/ds_sqldb_demo_dw_2024_Source_PostTypes')]",
 				"[concat(variables('factoryId'), '/datasets/ds_stackoverflow2013_Users')]",
 				"[concat(variables('factoryId'), '/datasets/ds_sqldb_demo_dw_2024_Source_Users')]",
+				"[concat(variables('factoryId'), '/linkedServices/ls_sqldb_demo_dw_2024')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_etl_facts')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Extract Posts",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"parallelCopies": 2,
+							"validateDataConsistency": true,
+							"dataIntegrationUnits": 4,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "Id",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "Key",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "CommentCount",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "CommentCount",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "CreationDate",
+											"type": "DateTime",
+											"physicalType": "datetime"
+										},
+										"sink": {
+											"name": "CreationDate",
+											"type": "DateTime",
+											"physicalType": "datetime"
+										}
+									},
+									{
+										"source": {
+											"name": "OwnerUserId",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "OwnerUserKey",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "PostTypeId",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "PostTypeKey",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "Score",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "Score",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "ViewCount",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "ViewCount",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_stackoverflow2013_Posts",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_sqldb_demo_dw_2024_Source_Posts",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Extract PostTypes",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"queryTimeout": "02:00:00",
+								"isolationLevel": "ReadCommitted",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"parallelCopies": 1,
+							"validateDataConsistency": true,
+							"dataIntegrationUnits": 4,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "Id",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "Key",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "Type",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "Type",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_stackoverflow2013_PostTypes",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_sqldb_demo_dw_2024_Source_PostTypes",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Transform Post data",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Extract Posts",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Extract PostTypes",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[stg].[ADF_Transform_factPost]"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sqldb_demo_dw_2024",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Load factPost",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Transform Post data",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[stg].[ADF_Load_factPost]",
+							"storedProcedureParameters": {
+								"ETLTimestamp": {
+									"value": {
+										"value": "@utcnow()",
+										"type": "Expression"
+									},
+									"type": "DateTime"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sqldb_demo_dw_2024",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_stackoverflow2013_Posts')]",
+				"[concat(variables('factoryId'), '/datasets/ds_sqldb_demo_dw_2024_Source_Posts')]",
+				"[concat(variables('factoryId'), '/datasets/ds_stackoverflow2013_PostTypes')]",
+				"[concat(variables('factoryId'), '/datasets/ds_sqldb_demo_dw_2024_Source_PostTypes')]",
 				"[concat(variables('factoryId'), '/linkedServices/ls_sqldb_demo_dw_2024')]"
 			]
 		},
