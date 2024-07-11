@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adf-demo-2024-01"
+		},
+		"ls_kv_demo_adf_2024_properties_typeProperties_baseUrl": {
+			"value": "https://kv-demo-adf-2024.vault.azure.net/"
+		},
+		"ls_sqldb_demo_dw_2024_properties_typeProperties_server": {
+			"value": "sql-demo-2024.database.windows.net"
+		},
+		"ls_sqldb_demo_dw_2024_properties_typeProperties_database": {
+			"value": "sqldb-demo-dw-2024"
+		},
+		"ls_stackoverflow2013_properties_typeProperties_server": {
+			"value": "DESKTOP-FAHJ1AD"
+		},
+		"ls_stackoverflow2013_properties_typeProperties_database": {
+			"value": "StackOverflow2013"
+		},
+		"ls_stackoverflow2013_properties_typeProperties_userName": {
+			"value": "adf-etl-demo-2024"
+		}
+	}
+}

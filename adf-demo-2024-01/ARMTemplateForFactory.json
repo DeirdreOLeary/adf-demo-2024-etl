@@ -1,0 +1,565 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adf-demo-2024-01"
+		},
+		"ls_kv_demo_adf_2024_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://kv-demo-adf-2024.vault.azure.net/"
+		},
+		"ls_sqldb_demo_dw_2024_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "sql-demo-2024.database.windows.net"
+		},
+		"ls_sqldb_demo_dw_2024_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "sqldb-demo-dw-2024"
+		},
+		"ls_stackoverflow2013_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "DESKTOP-FAHJ1AD"
+		},
+		"ls_stackoverflow2013_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "StackOverflow2013"
+		},
+		"ls_stackoverflow2013_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "adf-etl-demo-2024"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_kv_demo_adf_2024')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('ls_kv_demo_adf_2024_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_sqldb_demo_dw_2024')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('ls_sqldb_demo_dw_2024_properties_typeProperties_server')]",
+					"database": "[parameters('ls_sqldb_demo_dw_2024_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SystemAssignedManagedIdentity"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_stackoverflow2013')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"server": "[parameters('ls_stackoverflow2013_properties_typeProperties_server')]",
+					"database": "[parameters('ls_stackoverflow2013_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": true,
+					"authenticationType": "SQL",
+					"userName": "[parameters('ls_stackoverflow2013_properties_typeProperties_userName')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "ls_kv_demo_adf_2024",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "adf-etl-demo-2024-password"
+					}
+				},
+				"connectVia": {
+					"referenceName": "shir-demo",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/shir-demo')]",
+				"[concat(variables('factoryId'), '/linkedServices/ls_kv_demo_adf_2024')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/shir-demo')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_stackoverflow2013_Badges')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_stackoverflow2013",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [
+					{
+						"name": "Id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "UserId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Badges"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_stackoverflow2013')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_stackoverflow2013_Posts')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_stackoverflow2013",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [
+					{
+						"name": "Id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AcceptedAnswerId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AnswerCount",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Body",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ClosedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CommentCount",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CommunityOwnedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CreationDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "FavoriteCount",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "LastActivityDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "LastEditDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "LastEditorDisplayName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LastEditorUserId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "OwnerUserId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ParentId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "PostTypeId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Score",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Tags",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Title",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ViewCount",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Posts"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_stackoverflow2013')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_stackoverflow2013_PostTypes')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_stackoverflow2013",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [
+					{
+						"name": "Id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Type",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "PostTypes"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_stackoverflow2013')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_stackoverflow2013_Users')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_stackoverflow2013",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [
+					{
+						"name": "Id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AboutMe",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Age",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CreationDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "DisplayName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "DownVotes",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "EmailHash",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LastAccessDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "Location",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Reputation",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "UpVotes",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Views",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "WebsiteUrl",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AccountId",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Users"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_stackoverflow2013')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_sqldb_demo_dw_2024_Source_Badges')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sqldb_demo_dw_2024",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Key",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "UserKey",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "stg",
+					"table": "Source_Badges"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sqldb_demo_dw_2024')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_sqldb_demo_dw_2024_Source_Posts')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sqldb_demo_dw_2024",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Key",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CommentCount",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CreationDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "OwnerUserKey",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "PostTypeKey",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Score",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViewCount",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "stg",
+					"table": "Source_Posts"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sqldb_demo_dw_2024')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_sqldb_demo_dw_2024_Source_PostTypes')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sqldb_demo_dw_2024",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Key",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Type",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "stg",
+					"table": "Source_PostTypes"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sqldb_demo_dw_2024')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_sqldb_demo_dw_2024_Source_Users')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sqldb_demo_dw_2024",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Key",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "DisplayName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Reputation",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "stg",
+					"table": "Source_Users"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sqldb_demo_dw_2024')]"
+			]
+		}
+	]
+}
