@@ -77,39 +77,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ls_stackoverflow2013')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "SqlServer",
-				"typeProperties": {
-					"server": "[parameters('ls_stackoverflow2013_properties_typeProperties_server')]",
-					"database": "[parameters('ls_stackoverflow2013_properties_typeProperties_database')]",
-					"encrypt": "mandatory",
-					"trustServerCertificate": true,
-					"authenticationType": "SQL",
-					"userName": "[parameters('ls_stackoverflow2013_properties_typeProperties_userName')]",
-					"password": {
-						"type": "AzureKeyVaultSecret",
-						"store": {
-							"referenceName": "ls_kv_demo_adf_2024",
-							"type": "LinkedServiceReference"
-						},
-						"secretName": "adf-etl-demo-2024-password"
-					}
-				},
-				"connectVia": {
-					"referenceName": "shir-demo",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/shir-demo')]",
-				"[concat(variables('factoryId'), '/linkedServices/ls_kv_demo_adf_2024')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/ds_sqldb_demo_dw_2024_Source_Badges')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -145,6 +112,37 @@
 				"typeProperties": {
 					"schema": "stg",
 					"table": "Source_Badges"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sqldb_demo_dw_2024')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_sqldb_demo_dw_2024_Source_PostTypes')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sqldb_demo_dw_2024",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Key",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Type",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "stg",
+					"table": "Source_PostTypes"
 				}
 			},
 			"dependsOn": [
@@ -210,37 +208,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ds_sqldb_demo_dw_2024_Source_PostTypes')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_sqldb_demo_dw_2024",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "Key",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "Type",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "stg",
-					"table": "Source_PostTypes"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_sqldb_demo_dw_2024')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/ds_sqldb_demo_dw_2024_Source_Users')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -274,6 +241,39 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_sqldb_demo_dw_2024')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_stackoverflow2013')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"server": "[parameters('ls_stackoverflow2013_properties_typeProperties_server')]",
+					"database": "[parameters('ls_stackoverflow2013_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": true,
+					"authenticationType": "SQL",
+					"userName": "[parameters('ls_stackoverflow2013_properties_typeProperties_userName')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "ls_kv_demo_adf_2024",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "adf-etl-demo-2024-password"
+					}
+				},
+				"connectVia": {
+					"referenceName": "shir-demo",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/shir-demo')]",
+				"[concat(variables('factoryId'), '/linkedServices/ls_kv_demo_adf_2024')]"
 			]
 		},
 		{
@@ -312,6 +312,37 @@
 				"typeProperties": {
 					"schema": "dbo",
 					"table": "Badges"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_stackoverflow2013')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_stackoverflow2013_PostTypes')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_stackoverflow2013",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [
+					{
+						"name": "Id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Type",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "PostTypes"
 				}
 			},
 			"dependsOn": [
@@ -442,37 +473,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ds_stackoverflow2013_PostTypes')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_stackoverflow2013",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "SqlServerTable",
-				"schema": [
-					{
-						"name": "Id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "Type",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "PostTypes"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_stackoverflow2013')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/ds_stackoverflow2013_Users')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -559,6 +559,337 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_stackoverflow2013')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_etl_dims')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Extract Badges",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Truncate staging tables",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"queryTimeout": "02:00:00",
+								"isolationLevel": "ReadCommitted",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"parallelCopies": 1,
+							"validateDataConsistency": true,
+							"dataIntegrationUnits": 4,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "Id",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "Key",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "Name",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "Name",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "UserId",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "UserKey",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "Date",
+											"type": "DateTime",
+											"physicalType": "datetime"
+										},
+										"sink": {
+											"name": "Date",
+											"type": "DateTime",
+											"physicalType": "datetime"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_stackoverflow2013_Badges",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_sqldb_demo_dw_2024_Source_Badges",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Extract PostTypes",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Truncate staging tables",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"queryTimeout": "02:00:00",
+								"isolationLevel": "ReadCommitted",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"parallelCopies": 1,
+							"dataIntegrationUnits": 4,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "Id",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "Key",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "Type",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "Type",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_stackoverflow2013_PostTypes",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_sqldb_demo_dw_2024_Source_PostTypes",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Extract Users",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Truncate staging tables",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"queryTimeout": "02:00:00",
+								"isolationLevel": "ReadCommitted",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"parallelCopies": 2,
+							"dataIntegrationUnits": 4,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "Id",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "Key",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "DisplayName",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "DisplayName",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Reputation",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "Reputation",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_stackoverflow2013_Users",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_sqldb_demo_dw_2024_Source_Users",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Truncate staging tables",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[stg].[ADF_Truncate_Staging_Tables]"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sqldb_demo_dw_2024",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_stackoverflow2013_Badges')]",
+				"[concat(variables('factoryId'), '/datasets/ds_sqldb_demo_dw_2024_Source_Badges')]",
+				"[concat(variables('factoryId'), '/datasets/ds_stackoverflow2013_PostTypes')]",
+				"[concat(variables('factoryId'), '/datasets/ds_sqldb_demo_dw_2024_Source_PostTypes')]",
+				"[concat(variables('factoryId'), '/datasets/ds_stackoverflow2013_Users')]",
+				"[concat(variables('factoryId'), '/datasets/ds_sqldb_demo_dw_2024_Source_Users')]",
+				"[concat(variables('factoryId'), '/linkedServices/ls_sqldb_demo_dw_2024')]"
 			]
 		}
 	]
