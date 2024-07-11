@@ -1,0 +1,84 @@
+{
+	"name": "ds_stackoverflow2013_Users",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_stackoverflow2013",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "AboutMe",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Age",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CreationDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "DisplayName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "DownVotes",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "EmailHash",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LastAccessDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "Location",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Reputation",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "UpVotes",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Views",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "WebsiteUrl",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AccountId",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Users"
+		}
+	}
+}
