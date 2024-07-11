@@ -222,6 +222,75 @@
 					"referenceName": "ls_sqldb_demo_dw_2024",
 					"type": "LinkedServiceReference"
 				}
+			},
+			{
+				"name": "Transform User data",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Extract Badges",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Extract Users",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[stg].[ADF_Transform_dimUser]"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_sqldb_demo_dw_2024",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Load dimUser",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Transform User data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[stg].[ADF_Load_dimUser]",
+					"storedProcedureParameters": {
+						"ETLTimestamp": {
+							"value": {
+								"value": "@utcnow()",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_sqldb_demo_dw_2024",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
 		"annotations": []
