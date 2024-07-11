@@ -1,0 +1,37 @@
+{
+	"name": "ds_sqldb_demo_dw_2024_Source_Badges",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sqldb_demo_dw_2024",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Key",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "UserKey",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "stg",
+			"table": "Source_Badges"
+		}
+	}
+}

@@ -1,0 +1,26 @@
+{
+	"name": "ds_sqldb_demo_dw_2024_Source_PostTypes",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sqldb_demo_dw_2024",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Key",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Type",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "stg",
+			"table": "Source_PostTypes"
+		}
+	}
+}
