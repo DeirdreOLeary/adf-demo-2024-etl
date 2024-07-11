@@ -1,0 +1,31 @@
+{
+	"name": "ds_sqldb_demo_dw_2024_Source_Users",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sqldb_demo_dw_2024",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Key",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "DisplayName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Reputation",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "stg",
+			"table": "Source_Users"
+		}
+	}
+}

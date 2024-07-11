@@ -1,0 +1,53 @@
+{
+	"name": "ds_sqldb_demo_dw_2024_Source_Posts",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sqldb_demo_dw_2024",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Key",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CommentCount",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CreationDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "OwnerUserKey",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "PostTypeKey",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Score",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViewCount",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "stg",
+			"table": "Source_Posts"
+		}
+	}
+}
