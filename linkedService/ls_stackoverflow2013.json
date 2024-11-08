@@ -4,7 +4,7 @@
 		"annotations": [],
 		"type": "SqlServer",
 		"typeProperties": {
-			"server": "DESKTOP-FAHJ1AD",
+			"server": "***REMOVED***",
 			"database": "StackOverflow2013",
 			"encrypt": "mandatory",
 			"trustServerCertificate": true,
